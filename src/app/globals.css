@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/* Dark mode is driven by an explicit class OR the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Design tokens. Theme flips via .light / .dark on <html>, else follows OS.
+   A restrained system: warm paper, ink text, one teal "signal" accent, and
+   red/green reserved strictly for before→after / fail→pass meaning.
+--------------------------------------------------------------------------- */
+:root {
+  --canvas: #fbfbf8;
+  --surface: #ffffff;
+  --surface-2: #f4f4f0;
+  --ink: #101519;
+  --ink-soft: #38414b;
+  --muted: #5c6672;
+  --line: #e5e3da;
+  --line-strong: #d3d0c4;
+  --accent: #0e8f86;
+  --accent-ink: #0b6f68;
+  --accent-contrast: #ffffff;
+  --pos: #15803d;
+  --pos-bg: #eaf5ee;
+  --neg: #b4442f;
+  --neg-bg: #f7ece8;
+  --focus: #0e8f86;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --canvas: #0a0d11;
+    --surface: #111721;
+    --surface-2: #161d28;
+    --ink: #e9edf2;
+    --ink-soft: #c2cad4;
+    --muted: #8b95a2;
+    --line: #212a35;
+    --line-strong: #2c3743;
+    --accent: #2dd4bf;
+    --accent-ink: #5eead4;
+    --accent-contrast: #06201d;
+    --pos: #4ade80;
+    --pos-bg: #10231a;
+    --neg: #f0876b;
+    --neg-bg: #2a1712;
+    --focus: #2dd4bf;
+  }
+}
+
+:root.dark {
+  --canvas: #0a0d11;
+  --surface: #111721;
+  --surface-2: #161d28;
+  --ink: #e9edf2;
+  --ink-soft: #c2cad4;
+  --muted: #8b95a2;
+  --line: #212a35;
+  --line-strong: #2c3743;
+  --accent: #2dd4bf;
+  --accent-ink: #5eead4;
+  --accent-contrast: #06201d;
+  --pos: #4ade80;
+  --pos-bg: #10231a;
+  --neg: #f0876b;
+  --neg-bg: #2a1712;
+  --focus: #2dd4bf;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-pos: var(--pos);
+  --color-pos-bg: var(--pos-bg);
+  --color-neg: var(--neg);
+  --color-neg-bg: var(--neg-bg);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-code), ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-card: 14px;
+}
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Visible, consistent focus for keyboard users. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Reusable "measured / precise" mono label. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Subtle engineering-grid backdrop for hero / section accents. */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+.link-underline {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  text-underline-offset: 3px;
+}
+.link-underline:hover {
+  text-decoration-color: var(--accent);
+}
+
+/* Prompt/code blocks */
+pre,
+code,
+.mono {
+  font-family: var(--font-mono);
+}
