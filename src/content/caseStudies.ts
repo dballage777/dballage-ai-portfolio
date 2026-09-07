@@ -30,10 +30,26 @@ export type PromptVersion = {
   problems?: string[]; // what's wrong with this version
 };
 
+/**
+ * Controlled vocabulary for the filterable gallery. Only add a project under a
+ * type you actually have real (or clearly-labelled demonstration) work for —
+ * empty categories are hidden so the site never advertises an unproven skill.
+ */
+export type ProjectType =
+  | "Prompt systems"
+  | "Research workflows"
+  | "Content & documents"
+  | "Evaluation"
+  | "Websites & apps"
+  | "Automations & bots"
+  | "Creative & visual";
+
 export type CaseStudy = {
   slug: string;
   title: string;
   kind: string; // e.g. "Prompt system", "Evaluation", "Multi-model"
+  /** Which gallery filters this project appears under (1+). */
+  types: ProjectType[];
   /** true = real, anonymized work; false/undefined = independent demonstration. */
   real?: boolean;
   featured: boolean;
@@ -45,18 +61,18 @@ export type CaseStudy = {
   context: string;
   objective: string;
   constraints: string[];
-  initialApproach: string;
-  promptVersions: PromptVersion[];
+  initialApproach?: string;
+  promptVersions?: PromptVersion[];
   whyItWorks: string[];
-  evaluation: {
+  evaluation?: {
     kind: "Illustrative demonstration" | "Qualitative evaluation";
     criteria: string; // what the rubric measures
     rows?: EvalRow[]; // numeric (demonstrations)
     qualRows?: QualRow[]; // verdict-based (real work)
   };
-  testCases: string[];
-  beforeAfter: { input: string; before: string; after: string }[];
-  failureCases: string[];
+  testCases?: string[];
+  beforeAfter?: { input: string; before: string; after: string }[];
+  failureCases?: string[];
   lessons: string[];
   businessApplication: string;
   repoUrl?: string; // OPTIONAL — set when you publish the artifacts
@@ -68,6 +84,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "content-preserving-formatting-guardrails",
     title: "Making an AI reformat a document without destroying it",
     kind: "Real project · Prompt guardrails",
+    types: ["Prompt systems", "Content & documents"],
     real: true,
     featured: true,
     order: 1,
@@ -184,11 +201,123 @@ Content preservation is more important than equation formatting.`,
 
   // ==========================================================================
   {
+    slug: "student-research-source-finder",
+    title: "A research prompt that finds real scholarly sources — and rates them",
+    kind: "Real project · Research workflow",
+    types: ["Research workflows", "Prompt systems"],
+    real: true,
+    featured: true,
+    order: 2,
+    oneLiner:
+      "A reusable prompt that turns a topic into a graded reading list of genuine, credible academic sources — with the blogs, SEO filler, and hallucinated citations filtered out.",
+    tags: ["Research workflow", "Source credibility", "Structured output", "Guardrails"],
+    models: ["Gemini (Deep Research / Pro mode)"],
+    problem:
+      "Ask an AI for 'sources on X' and you get a confident list padded with blogs, SEO filler, and sometimes invented citations — the opposite of what a research paper needs. There's no signal for which sources are actually credible.",
+    context:
+      "Real, anonymized work: a reusable prompt built to help high-school students find trustworthy sources for papers, debates, and presentations — academically strong but still readable. It runs in a research-capable mode so it can actually search rather than recall.",
+    objective:
+      "Return a structured, graded reading list of real, credible sources — beginner-friendly through most-cited — with working links, opposing viewpoints where genuine debate exists, and an explicit steer away from weak sources.",
+    constraints: [
+      "Prioritize peer-reviewed, primary, and highly-cited work",
+      "Explicitly avoid weak blogs, AI summaries, SEO filler, and unsupported opinion",
+      "Include opposing viewpoints where real academic disagreement exists",
+      "Say which sources to actually cite, and in what reading order",
+    ],
+    initialApproach:
+      "The obvious version — 'find scholarly sources about [topic]' — returns a flat list that mixes a couple of gold-standard papers with random blogs, gives no credibility signal, and occasionally fabricates a link.",
+    promptVersions: [
+      {
+        label: "v1 — Naive ask",
+        prompt: `Find scholarly sources about [topic].`,
+        problems: [
+          "Mixes credible papers with blogs and AI-summary sites, with no way to tell them apart.",
+          "No ranking, no citation counts, no opposing views.",
+          "Links are unreliable — some don't resolve or are invented.",
+        ],
+      },
+      {
+        label: "vFinal — Role + source-quality rules + graded schema (real prompt, trimmed)",
+        prompt: `You are an expert research assistant using a research-capable mode.
+Find the strongest scholarly sources on this topic for a high-school student.
+
+Requirements:
+- Academically strong but understandable for high-school papers/debates/essays.
+- Search journals, Google Scholar, university & government sources, databases.
+- Prioritize peer-reviewed research, primary sources, landmark & highly-cited work.
+- Also include beginner-friendly university explainers that aid understanding.
+- AVOID weak blogs, AI summaries, SEO filler, and unsupported opinion pieces.
+- Include opposing viewpoints if genuine academic disagreement exists.
+- Compare the strongest sources and explain which are most credible.
+- Include direct, clickable links to every source.
+
+Output format:
+1. Best Beginner-Friendly Sources (title · author/institution · why · link)
+2. Strongest Academic Sources
+3. Most-Cited Sources (with citation counts)
+4. Best Recent Research
+5. Major Academic Debates (competing views + key sources per side)
+6. Leading Scholars & Institutions
+7. Recommended Sources to Actually Cite
+8. Recommended Reading Order
+9. Final Research Summary
+
+Topic: [TOPIC]`,
+      },
+    ],
+    whyItWorks: [
+      "It encodes source-quality *judgment* as explicit rules — prioritize peer-reviewed/primary/highly-cited, and name the anti-patterns to avoid (SEO filler, AI summaries).",
+      "The 9-section schema forces the model to compare and justify credibility, surface real debates, and end with 'what to actually cite' — turning a list into a graded research map.",
+      "Asking for citation counts makes credibility visible instead of implied.",
+      "Running in a research-capable mode means it searches for real sources rather than recalling plausible-sounding ones.",
+    ],
+    evaluation: {
+      kind: "Qualitative evaluation",
+      criteria:
+        "Checked against a real run for a 10th-grade English topic ('can TV / social media / gaming be considered literature?'). Verdicts compare the naive ask to the final prompt on that run.",
+      qualRows: [
+        { criterion: "Sources are real & locatable", before: "Fail", after: "Pass", note: "Final surfaced findable works (Jenkins, Convergence Culture; Aarseth, Cybertext)." },
+        { criterion: "Credibility is visible", before: "Fail", after: "Pass", note: "Lists citation counts & why each matters (Convergence Culture ~38k citations)." },
+        { criterion: "Weak sources filtered", before: "Partial", after: "Pass", note: "Explicit 'avoid SEO filler / AI summaries' steer." },
+        { criterion: "Opposing viewpoints surfaced", before: "Fail", after: "Pass", note: "Final surfaced the Ludology-vs-Narratology debate." },
+      ],
+    },
+    testCases: [
+      "A humanities topic with genuine academic debate",
+      "A STEM topic where primary papers dominate",
+      "A niche topic with thin scholarship (should say so, not invent sources)",
+    ],
+    beforeAfter: [
+      {
+        input: "Topic: 'Can TV / social media / gaming be considered literature?' (10th-grade English paper)",
+        before:
+          "A flat list: two real books mixed with generic blog posts and an AI-summary site, no indication which are credible, and one link that didn't resolve.",
+        after:
+          "A 9-part guide — beginner-friendly picks, strongest academic sources (Aarseth's 'ergodic literature'), most-cited (Convergence Culture, ~38k citations), the Ludology-vs-Narratology debate, a reading order, and the three sources to actually cite — each with a link.",
+      },
+    ],
+    failureCases: [
+      "A link can still point to a paywalled or moved page — verify before citing.",
+      "For very niche topics it can over-reach; the thin-scholarship case is the real test.",
+      "It's a strong starting map, not a substitute for actually reading the sources.",
+    ],
+    lessons: [
+      "Encode source-quality judgment into the prompt, not just the task — name what 'good' and 'bad' sources look like.",
+      "A good output schema forces the model to compare and justify, instead of just listing.",
+      "Naming anti-patterns ('no SEO filler, no AI summaries') matters as much as naming targets.",
+    ],
+    businessApplication:
+      "The same pattern powers any credibility-first research assistant — literature reviews, market/competitive research, or due diligence — where 'which sources can I trust, and why' matters more than sheer volume.",
+  },
+
+  // ==========================================================================
+  {
     slug: "support-triage-prompt-system",
     title: "Support-inbox triage & drafting system",
     kind: "Prompt system",
-    featured: true,
-    order: 2,
+    types: ["Prompt systems"],
+    featured: false,
+    order: 3,
     oneLiner:
       "Turning a single 'answer this email' prompt into a two-step system that classifies, then drafts — with guardrails and an evaluation set.",
     tags: ["Prompt chaining", "Structured output", "Guardrails", "Evaluation"],
@@ -364,8 +493,9 @@ JSON only: { "category", "action", "needs_info", "draft_reply", "confidence" }
     slug: "multi-model-extraction",
     title: "Same task, three models: structured extraction",
     kind: "Multi-model comparison",
-    featured: true,
-    order: 3,
+    types: ["Prompt systems"],
+    featured: false,
+    order: 4,
     oneLiner:
       "Extracting clean structured data from messy meeting notes — and adapting the prompt to how each model actually behaves.",
     tags: ["Model-aware prompting", "Structured output", "Few-shot", "Evaluation"],
@@ -468,8 +598,9 @@ GEMINI-class — benefits from an explicit 'do not infer' guardrail and an
     slug: "evaluation-framework",
     title: "A rubric-based evaluation harness for AI summaries",
     kind: "Evaluation",
+    types: ["Evaluation"],
     featured: true,
-    order: 4,
+    order: 5,
     oneLiner:
       "Deciding what 'a good summary' means before generating one — a reusable rubric, test set, and LLM-judge sanity check.",
     tags: ["Evaluation rubric", "LLM-as-judge", "Failure analysis", "Regression"],
@@ -570,6 +701,45 @@ This mirrors the "evaluation flywheel" idea: measure the measurer.`,
     ],
     businessApplication:
       "Any team shipping an AI feature (summaries, replies, extraction) can adopt this pattern to gate releases: define criteria, keep a test set, and require the judge itself to be validated before it's trusted.",
+  },
+  // ==========================================================================
+  {
+    slug: "this-portfolio-site",
+    title: "This site, built to demonstrate instead of claim",
+    kind: "Real project · Design & build",
+    types: ["Websites & apps"],
+    real: true,
+    featured: false,
+    order: 6,
+    oneLiner:
+      "A fast, accessible, statically-portable Next.js portfolio whose architecture is part of the argument — real work labelled honestly, content separated from code.",
+    tags: ["Next.js", "TypeScript", "Tailwind", "Accessibility", "SEO"],
+    models: ["Design & build (no model at runtime)"],
+    problem:
+      "Most AI portfolios claim expertise with adjectives. The brief here was the opposite: prove it by showing prompts, iterations, and evaluations — while staying honest and, for now, anonymous.",
+    context:
+      "A real build. The structure and positioning were chosen from a synthesis of 30 researched sources spanning prompt engineering, evaluation, hiring signals, and hosting.",
+    objective:
+      "Fast, responsive, accessible, SEO-ready, and easy to maintain — host-portable across Vercel and static hosts — and honest by construction, with real work and demonstrations clearly distinguished.",
+    constraints: [
+      "No fabricated claims, clients, or credentials",
+      "Anonymous until the owner chooses otherwise",
+      "Content editable without touching components",
+      "Deployable on Vercel or as a static export (GitHub Pages)",
+    ],
+    whyItWorks: [
+      "Content is separated from presentation in typed data files, so projects and prompts are edited without touching components.",
+      "The information architecture leads with method and evaluation, with a filterable gallery layered on top for browsing by type.",
+      "Honesty is built into the system: real-vs-demonstration badges, illustrative-score labels, and empty categories hidden so nothing unproven is advertised.",
+      "It's theme-aware and accessible (skip link, focus states, reduced-motion) and exports to static HTML for zero-cost hosting.",
+    ],
+    lessons: [
+      "Architecture can be the argument — how a portfolio is built is itself evidence.",
+      "Honesty is a feature, not a limitation: labelling demonstrations plainly makes the real work more credible, not less.",
+      "Separating content from code is what makes a site something you'll actually keep updated.",
+    ],
+    businessApplication:
+      "The same approach fits any professional or personal site that has to load fast, rank in search, and stay easy to update without a developer on call.",
   },
 ];
 

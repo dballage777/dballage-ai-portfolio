@@ -2,7 +2,13 @@ import Link from "next/link";
 import type { CaseStudy } from "@/content/caseStudies";
 import { Pill } from "./ui";
 
-export function CaseStudyCard({ cs }: { cs: CaseStudy }) {
+/** Just the fields a card needs — keeps the client gallery payload small. */
+export type CardCaseStudy = Pick<
+  CaseStudy,
+  "slug" | "title" | "kind" | "oneLiner" | "tags" | "models" | "real" | "types"
+>;
+
+export function CaseStudyCard({ cs }: { cs: CardCaseStudy }) {
   return (
     <Link
       href={`/work/${cs.slug}`}
@@ -29,9 +35,7 @@ export function CaseStudyCard({ cs }: { cs: CaseStudy }) {
         ))}
       </div>
       <div className="mt-4 border-t border-line pt-3">
-        <p className="font-mono text-xs text-muted">
-          {cs.models.join(" · ")}
-        </p>
+        <p className="font-mono text-xs text-muted">{cs.models.join(" · ")}</p>
       </div>
     </Link>
   );

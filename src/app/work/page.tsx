@@ -2,28 +2,39 @@ import type { Metadata } from "next";
 import { caseStudies } from "@/content/caseStudies";
 import { site } from "@/content/site";
 import { Container, Section, SectionHeading } from "@/components/ui";
-import { CaseStudyCard } from "@/components/CaseStudyCard";
+import { WorkGallery } from "@/components/WorkGallery";
+import type { CardCaseStudy } from "@/components/CaseStudyCard";
 
 export const metadata: Metadata = {
   title: "Case studies",
   description:
-    "In-depth AI prompt engineering and workflow case studies — problem, approach, prompt iteration, evaluation, and lessons.",
+    "AI prompt engineering, research-workflow, and evaluation case studies — problem, approach, prompt iteration, evaluation, and lessons. Filter by type.",
 };
 
 export default function WorkPage() {
-  const sorted = [...caseStudies].sort((a, b) => a.order - b.order);
+  const items: CardCaseStudy[] = [...caseStudies]
+    .sort((a, b) => a.order - b.order)
+    .map(({ slug, title, kind, oneLiner, tags, models, real, types }) => ({
+      slug,
+      title,
+      kind,
+      oneLiner,
+      tags,
+      models,
+      real,
+      types,
+    }));
+
   return (
     <Section>
       <Container>
         <SectionHeading
           eyebrow="Case studies"
           title="Work you can inspect"
-          intro="These are independent demonstrations built to show method and thinking. Each follows the same structure so you can compare how I reason across different problems."
+          intro="A mix of real, anonymized projects and independent demonstrations — each labelled. Filter by the kind of work, or read them all; every one follows the same structure so you can compare how I reason across problems."
         />
-        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {sorted.map((cs) => (
-            <CaseStudyCard key={cs.slug} cs={cs} />
-          ))}
+        <div className="mt-10">
+          <WorkGallery items={items} />
         </div>
         <p className="mt-8 max-w-2xl text-sm leading-relaxed text-muted">
           {site.demoDisclaimer}
