@@ -33,24 +33,28 @@ export default function ContactPage() {
                 <span aria-hidden className="text-accent">✉</span>
                 <span className="text-ink-soft">{site.email}</span>
               </a>
-              <a
-                href={site.links.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 hover:border-line-strong"
-              >
-                <span aria-hidden className="text-accent">in</span>
-                <span className="text-ink-soft">LinkedIn</span>
-              </a>
-              <a
-                href={site.links.github}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 hover:border-line-strong"
-              >
-                <span aria-hidden className="font-mono text-accent">{"{ }"}</span>
-                <span className="text-ink-soft">GitHub</span>
-              </a>
+              {site.links.linkedin && (
+                <a
+                  href={site.links.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 hover:border-line-strong"
+                >
+                  <span aria-hidden className="text-accent">in</span>
+                  <span className="text-ink-soft">LinkedIn</span>
+                </a>
+              )}
+              {site.links.github && (
+                <a
+                  href={site.links.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 hover:border-line-strong"
+                >
+                  <span aria-hidden className="font-mono text-accent">{"{ }"}</span>
+                  <span className="text-ink-soft">GitHub</span>
+                </a>
+              )}
             </div>
             <p className="mt-6 text-xs text-muted">{site.location}</p>
           </div>

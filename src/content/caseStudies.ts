@@ -15,6 +15,14 @@ export type EvalRow = {
   note: string;
 };
 
+/** Verdict-based row for REAL work, where honest numeric scores don't exist. */
+export type QualRow = {
+  criterion: string;
+  before: "Fail" | "Partial" | "Pass";
+  after: "Fail" | "Partial" | "Pass";
+  note: string;
+};
+
 export type PromptVersion = {
   label: string;
   language?: string;
@@ -26,6 +34,8 @@ export type CaseStudy = {
   slug: string;
   title: string;
   kind: string; // e.g. "Prompt system", "Evaluation", "Multi-model"
+  /** true = real, anonymized work; false/undefined = independent demonstration. */
+  real?: boolean;
   featured: boolean;
   order: number;
   oneLiner: string;
@@ -41,7 +51,8 @@ export type CaseStudy = {
   evaluation: {
     kind: "Illustrative demonstration" | "Qualitative evaluation";
     criteria: string; // what the rubric measures
-    rows: EvalRow[];
+    rows?: EvalRow[]; // numeric (demonstrations)
+    qualRows?: QualRow[]; // verdict-based (real work)
   };
   testCases: string[];
   beforeAfter: { input: string; before: string; after: string }[];
@@ -54,11 +65,130 @@ export type CaseStudy = {
 export const caseStudies: CaseStudy[] = [
   // ==========================================================================
   {
+    slug: "content-preserving-formatting-guardrails",
+    title: "Making an AI reformat a document without destroying it",
+    kind: "Real project · Prompt guardrails",
+    real: true,
+    featured: true,
+    order: 1,
+    oneLiner:
+      "Converting a lesson packet's plain-text math into proper equation objects — while stopping the model from silently rewriting, regenerating, or deleting the content around it.",
+    tags: ["Guardrails", "Prompt iteration", "Instruction design", "Verification"],
+    models: ["Gemini (in Google Docs)"],
+    problem:
+      "A formatting-only task — turn typed math like '(b)/(2)' into real equation objects — kept turning destructive. Asked to 'convert all math to equation format', the model would also paraphrase the lesson, regenerate whole sections, and drop or replace equations that were already correct.",
+    context:
+      "This is real, anonymized work: a multi-page math notes-and-review packet where every mathematical concept, every reference table, and the blank student workspace had to survive completely untouched. The only thing allowed to change was plain-text notation becoming properly typeset equations.",
+    objective:
+      "Convert every eligible plain-text expression to a native equation object and change nothing else. The document must never end with fewer equations — or less content — than it started with.",
+    constraints: [
+      "No rewriting, regenerating, paraphrasing, or reorganizing anything",
+      "Preserve page breaks, tables, headings, spacing, and student workspace exactly",
+      "If an expression can't be cleanly converted, leave it exactly as-is — never delete it",
+      "When in doubt, preserve the original rather than attempt a conversion",
+    ],
+    initialApproach:
+      "A broad, thorough-sounding instruction: 'Review the entire document and convert every mathematical expression to a formatted equation.' It read well but gave the model permission to touch everything — so it 'improved' prose and regenerated sections it was never asked to.",
+    promptVersions: [
+      {
+        label: "v1 — Broad 'convert all the math' (over-reaches)",
+        prompt: `Review the ENTIRE document. Locate every mathematical expression,
+equation, fraction, exponent, radical, etc. that is typed as plain text and
+replace it with a properly formatted equation (Insert -> Equation).
+Use stacked fractions, superscripts, proper radicals, professional spacing.
+The finished document should resemble a professionally typeset textbook.`,
+        problems: [
+          "'Review the entire document' + 'should resemble a textbook' invited rewriting, not just converting.",
+          "The model regenerated the review section and paraphrased instructional text.",
+          "Some already-correct equations were replaced or dropped in the process.",
+          "No rule for what to do with an expression it couldn't convert.",
+        ],
+      },
+      {
+        label: "v2 — Forbid the destructive actions + define success",
+        prompt: `Your task is ONLY to convert existing plain-text math into equation
+objects. DO NOT rewrite, regenerate, paraphrase, summarize, reorganize, or edit
+any instructional content. DO NOT remove or replace existing equations.
+
+1. Find math currently typed as plain text.
+2. Replace ONLY that expression with an Insert -> Equation object.
+3. Move on.
+
+If you cannot confidently convert an expression, LEAVE IT EXACTLY AS IS. Never
+delete it. The document must never contain fewer equations after this than
+before it. When in doubt, preserve the original text.
+
+Success criteria: no content removed, no formatting/layout changes, no rewritten
+text — only successful plain-text -> equation conversions.`,
+        problems: [
+          "Much safer, but under ambiguity the model still occasionally nudged spacing or dropped a borderline expression.",
+        ],
+      },
+      {
+        label: "v3 — Final: make preservation the top priority, explicitly",
+        prompt: `DO NOT delete, replace, rewrite, or modify any existing mathematical
+expression. If you cannot convert a plain-text expression into a native equation
+object, leave the original text EXACTLY as it is.
+
+Under no circumstances should an equation disappear. If conversion is not
+possible, make no change.
+
+Content preservation is more important than equation formatting.`,
+      },
+    ],
+    whyItWorks: [
+      "It separates the one allowed action (convert) from everything else, instead of describing a goal ('make it look like a textbook') that licenses rewriting.",
+      "It enumerates the forbidden actions explicitly — 'do not rewrite / regenerate / paraphrase / delete' — rather than trusting the model to infer scope.",
+      "It defines a measurable invariant: the document must never have fewer equations or less content afterward. That turns 'did it behave?' into something you can actually check.",
+      "It gives the model a safe default for ambiguity ('when in doubt, preserve') and states the priority order outright: preservation beats formatting.",
+    ],
+    evaluation: {
+      kind: "Qualitative evaluation",
+      criteria:
+        "Judged by comparing the before and after documents page by page — a manual diff, not a score. Verdicts below track how each version behaved against the invariants.",
+      qualRows: [
+        { criterion: "Instructional content preserved", before: "Fail", after: "Pass", note: "v1 paraphrased/regenerated text; v3 left all prose untouched." },
+        { criterion: "No equations lost (count never drops)", before: "Fail", after: "Pass", note: "v1 replaced/dropped correct equations; the invariant fixed it." },
+        { criterion: "Layout, tables & student workspace intact", before: "Partial", after: "Pass", note: "v2 still nudged spacing occasionally; v3 held." },
+        { criterion: "Only plain-text notation converted", before: "Fail", after: "Pass", note: "Scope narrowed from 'all math' to 'plain-text math only'." },
+      ],
+    },
+    testCases: [
+      "A page mixing prose, worked examples, and typed math",
+      "A page that is mostly blank student workspace (must stay blank and intact)",
+      "Expressions that don't convert cleanly (must be left as text, not deleted)",
+      "Reference tables of rules/keywords (must not be 'improved' or reflowed)",
+    ],
+    beforeAfter: [
+      {
+        input: "The broad 'convert all the math and make it look like a textbook' prompt, run on the packet.",
+        before:
+          "The model returned a 'better' document: it had rewritten the review summary, reworded takeaways, and a couple of already-correct equations had vanished — a net loss disguised as an improvement.",
+        after:
+          "With the guardrailed prompt, the diff showed only what was intended: plain-text expressions became equation objects, and every word, table, and blank workspace line was byte-for-byte where it had been.",
+      },
+    ],
+    failureCases: [
+      "The safe default ('when in doubt, preserve') trades completeness for safety — a few genuinely convertible expressions get left as text. That's the right trade for this task, but it's a trade.",
+      "Models can still tweak spacing on the converted lines; a final human diff is still worth doing.",
+      "The guardrails reduce the risk of silent destruction — they don't remove the need to verify the artifact.",
+    ],
+    lessons: [
+      "For 'touch only X, preserve everything else' tasks, constrain by forbidding actions and defining an invariant — don't just describe the goal.",
+      "Give the model an explicit safe default for ambiguous cases, and state the priority order out loud ('preservation beats formatting').",
+      "Make success verifiable: if you can diff the artifact against an invariant, you can tell whether the prompt actually worked.",
+    ],
+    businessApplication:
+      "This pattern applies to any 'change only one thing, preserve the rest' document task — reformatting, tagging, notation migration, or light cleanup — where a silent rewrite is the real danger. It's also the backbone of using AI to produce instructional or technical materials you can actually trust to ship.",
+  },
+
+  // ==========================================================================
+  {
     slug: "support-triage-prompt-system",
     title: "Support-inbox triage & drafting system",
     kind: "Prompt system",
     featured: true,
-    order: 1,
+    order: 2,
     oneLiner:
       "Turning a single 'answer this email' prompt into a two-step system that classifies, then drafts — with guardrails and an evaluation set.",
     tags: ["Prompt chaining", "Structured output", "Guardrails", "Evaluation"],
@@ -235,7 +365,7 @@ JSON only: { "category", "action", "needs_info", "draft_reply", "confidence" }
     title: "Same task, three models: structured extraction",
     kind: "Multi-model comparison",
     featured: true,
-    order: 2,
+    order: 3,
     oneLiner:
       "Extracting clean structured data from messy meeting notes — and adapting the prompt to how each model actually behaves.",
     tags: ["Model-aware prompting", "Structured output", "Few-shot", "Evaluation"],
@@ -339,7 +469,7 @@ GEMINI-class — benefits from an explicit 'do not infer' guardrail and an
     title: "A rubric-based evaluation harness for AI summaries",
     kind: "Evaluation",
     featured: true,
-    order: 3,
+    order: 4,
     oneLiner:
       "Deciding what 'a good summary' means before generating one — a reusable rubric, test set, and LLM-judge sanity check.",
     tags: ["Evaluation rubric", "LLM-as-judge", "Failure analysis", "Regression"],

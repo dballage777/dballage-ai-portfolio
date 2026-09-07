@@ -36,6 +36,7 @@ export const capabilities: Capability[] = [
       "Few-shot examples & output schemas",
       "Prompt decomposition & chaining",
       "Guardrails & constraint design",
+      "Output budgeting & structured compression",
       "Building reusable prompt systems",
     ],
   },
@@ -74,6 +75,7 @@ export const capabilities: Capability[] = [
     skills: [
       "Documenting methodology",
       "Communicating AI capabilities to non-technical clients",
+      "Producing reliable instructional & technical documents",
       "Writing clear limitations",
       "Creating repeatable, hand-off-able processes",
       "Helping organizations use AI more effectively",

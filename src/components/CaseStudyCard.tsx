@@ -9,7 +9,14 @@ export function CaseStudyCard({ cs }: { cs: CaseStudy }) {
       className="group flex flex-col rounded-[var(--radius-card)] border border-line bg-surface p-5 transition-colors hover:border-line-strong hover:bg-surface-2 sm:p-6"
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="eyebrow">{cs.kind}</span>
+        <span className="flex items-center gap-2 eyebrow">
+          <span
+            aria-hidden
+            className={`h-1.5 w-1.5 rounded-full ${cs.real ? "bg-pos" : "bg-muted"}`}
+            title={cs.real ? "Real project" : "Demonstration"}
+          />
+          {cs.real ? "Real" : "Demo"}
+        </span>
         <span className="text-xs text-muted transition-transform group-hover:translate-x-0.5">
           Read →
         </span>

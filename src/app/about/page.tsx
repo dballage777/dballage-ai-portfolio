@@ -86,16 +86,23 @@ export default function AboutPage() {
             <div className="rounded-[var(--radius-card)] border border-line bg-surface p-5">
               <h2 className="eyebrow mb-3">Elsewhere</h2>
               <ul className="space-y-2 text-sm">
-                <li>
-                  <a href={site.links.github} target="_blank" rel="noreferrer" className="text-ink-soft hover:text-accent">
-                    GitHub →
-                  </a>
-                </li>
-                <li>
-                  <a href={site.links.linkedin} target="_blank" rel="noreferrer" className="text-ink-soft hover:text-accent">
-                    LinkedIn →
-                  </a>
-                </li>
+                {site.links.github && (
+                  <li>
+                    <a href={site.links.github} target="_blank" rel="noreferrer" className="text-ink-soft hover:text-accent">
+                      GitHub →
+                    </a>
+                  </li>
+                )}
+                {site.links.linkedin && (
+                  <li>
+                    <a href={site.links.linkedin} target="_blank" rel="noreferrer" className="text-ink-soft hover:text-accent">
+                      LinkedIn →
+                    </a>
+                  </li>
+                )}
+                {!site.links.github && !site.links.linkedin && (
+                  <li className="text-muted">Links hidden while anonymous — add them in site.ts.</li>
+                )}
               </ul>
               <div className="mt-4">
                 <Button href="/contact" variant="outline" className="w-full">

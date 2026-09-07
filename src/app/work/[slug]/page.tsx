@@ -6,6 +6,7 @@ import { site } from "@/content/site";
 import { Container, Section, Pill, Button } from "@/components/ui";
 import { PromptBlock } from "@/components/PromptBlock";
 import { EvalTable } from "@/components/EvalTable";
+import { QualEvalTable } from "@/components/QualEvalTable";
 import { BeforeAfter } from "@/components/BeforeAfter";
 
 export function generateStaticParams() {
@@ -59,7 +60,17 @@ export default async function CaseStudyPage({
           <Link href="/work" className="link-underline text-sm text-muted">
             ← All case studies
           </Link>
-          <p className="eyebrow mt-6">{cs.kind}</p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                cs.real ? "bg-pos-bg text-pos" : "bg-surface-2 text-ink-soft"
+              }`}
+            >
+              <span aria-hidden>{cs.real ? "●" : "◐"}</span>
+              {cs.real ? "Real project (anonymized)" : "Independent demonstration"}
+            </span>
+            <span className="eyebrow">{cs.kind}</span>
+          </div>
           <h1 className="mt-2 max-w-3xl text-balance text-3xl font-semibold tracking-tight sm:text-5xl">
             {cs.title}
           </h1>
@@ -146,11 +157,19 @@ export default async function CaseStudyPage({
         <section className="border-t border-line py-8">
           <h2 className="eyebrow">Evaluation</h2>
           <div className="mt-5">
-            <EvalTable
-              rows={cs.evaluation.rows}
-              kind={cs.evaluation.kind}
-              criteria={cs.evaluation.criteria}
-            />
+            {cs.evaluation.rows ? (
+              <EvalTable
+                rows={cs.evaluation.rows}
+                kind={cs.evaluation.kind}
+                criteria={cs.evaluation.criteria}
+              />
+            ) : cs.evaluation.qualRows ? (
+              <QualEvalTable
+                rows={cs.evaluation.qualRows}
+                kind={cs.evaluation.kind}
+                criteria={cs.evaluation.criteria}
+              />
+            ) : null}
           </div>
           <div className="mt-6 grid gap-6 md:grid-cols-2">
             <div>

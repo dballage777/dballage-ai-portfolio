@@ -63,16 +63,20 @@ export function Footer() {
                 Contact
               </Link>
             </li>
-            <li>
-              <a href={site.links.github} target="_blank" rel="noreferrer" className="text-ink-soft hover:text-accent">
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href={site.links.linkedin} target="_blank" rel="noreferrer" className="text-ink-soft hover:text-accent">
-                LinkedIn
-              </a>
-            </li>
+            {site.links.github && (
+              <li>
+                <a href={site.links.github} target="_blank" rel="noreferrer" className="text-ink-soft hover:text-accent">
+                  GitHub
+                </a>
+              </li>
+            )}
+            {site.links.linkedin && (
+              <li>
+                <a href={site.links.linkedin} target="_blank" rel="noreferrer" className="text-ink-soft hover:text-accent">
+                  LinkedIn
+                </a>
+              </li>
+            )}
           </ul>
         </div>
       </div>

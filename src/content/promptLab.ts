@@ -111,4 +111,32 @@ Question: {{question}}`,
     whenToUse:
       "Policy, legal, medical, factual lookup — anywhere a wrong-but-confident answer is worse than 'I don't know'.",
   },
+  {
+    slug: "output-budgeting",
+    technique: "Output budgeting & structured compression",
+    task: "Compress a full lesson (or doc) into a one-page, skimmable review sheet without losing any concepts.",
+    weak: "Summarize this lesson into a review page.",
+    strong: `<role>Act as a professional textbook publisher building a one-page
+quick-reference review sheet.</role>
+
+<budget>
+- Lesson Summary: 3–5 sentences, readable in under a minute.
+- Key Takeaways: 4–6 bullets, one sentence each, no repeats.
+- Common Mistakes: concise one-line bullets.
+- Rules & Reference: combine into ONE compact table; use abbreviations.
+</budget>
+
+<rules>
+- Compress wording, not content. Keep every concept and reminder.
+- Prefer bullets and tables over paragraphs; minimal vertical whitespace.
+- Must fit on a single page.
+</rules>
+
+<verify>Before finishing, compare against the source and confirm every
+important idea is still present — just expressed more efficiently.</verify>`,
+    reasoning:
+      "Explicit per-section budgets (sentence and bullet counts) force the model to prioritize instead of padding, and 'compress wording, not content' plus a final compare-to-source check guards against quietly dropping concepts. The role sets the quality bar.",
+    whenToUse:
+      "Study sheets, exec summaries, release notes, one-pagers — anywhere you need it to fit and stay skimmable without losing substance.",
+  },
 ];

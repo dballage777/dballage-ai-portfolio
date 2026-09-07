@@ -13,22 +13,31 @@ GitHub Pages.
 
 ## 1. First thing to do: make it yours
 
-Open **`src/content/site.ts`** and replace the `TODO` placeholders:
+The site is currently set to **anonymous** mode (your choice). Open
+**`src/content/site.ts`** to adjust:
 
-| Field | What to set |
+| Field | Current state → what to set |
 |---|---|
-| `name`, `firstName` | Your real name |
-| `email` | Your preferred **public** contact email (your login email was intentionally *not* auto-published) |
-| `links.linkedin` | Your LinkedIn URL |
-| `links.github` | Pre-filled to `github.com/dballage777` — change if needed |
-| `url` | Your final deployed domain (used for SEO/sitemap/OG) |
-| `role`, `tagline`, `positioning.*` | Tune the wording if you like — it's already written |
+| `name` | A neutral working alias (`"Signal & Structure"`). Swap for your real name or preferred handle. |
+| `email` | Placeholder. Set your preferred **public** contact email (your login email was intentionally *not* published). |
+| `links.github` / `links.linkedin` | **Empty** (hidden from the UI while anonymous). Add them when ready — any empty link auto-hides. |
+| `url` | Your final deployed domain (used for SEO/sitemap/OG). |
+| `role`, `tagline`, `positioning.*` | Already written — tune to taste. |
 
 That one file drives the hero, metadata, footer, contact, and all positioning copy.
 
-Everything else the site presents is honest by construction: case studies are
-labelled **independent demonstrations**, and all evaluation scores are labelled
-**illustrative** — never fabricated benchmarks or client results.
+**Honesty model.** Each case study is labelled either **Real project
+(anonymized)** or **Independent demonstration**. The lead case study
+(`content-preserving-formatting-guardrails`) is built from your own real Gemini
+work, anonymized (no employer/location/student data). Numeric scores on the
+demonstrations are labelled **illustrative**; the real project uses a
+verdict-based (Fail/Pass) evaluation because honest numbers don't exist for it.
+
+### Your AI-history exports
+Raw exports you shared live in **`_private/`**, which is **git-ignored and never
+pushed**. Only the polished, sanitized case-study/Prompt-Lab content derived from
+them is committed. Add more exports (e.g. the ChatGPT ones) to `_private/` and I
+can mine them the same way.
 
 ---
 
@@ -153,12 +162,15 @@ is at `/research`.
 ---
 
 ## 9. What you still need to provide
-- [ ] Your name, public contact email, and LinkedIn URL (`src/content/site.ts`).
+- [ ] Decide when to drop anonymity: set `name` to your real name/handle and add
+      `links.github` / `links.linkedin` in `src/content/site.ts`.
+- [ ] Your preferred public contact email (`site.email`).
 - [ ] Your real background paragraph on the About page (`src/app/about/page.tsx`) —
-      optional, but recommended; nothing there currently claims experience for you.
+      optional; nothing there currently claims experience for you.
 - [ ] A custom domain, then set `site.url`.
-- [ ] (Strongly recommended) Publish case-study artifacts as GitHub repos and set
-      each `repoUrl` to convert "demonstration" into inspectable proof.
-- [ ] (Optional) A live interactive demo on Hugging Face Spaces, linked from a
-      case study.
+- [ ] The **ChatGPT** export when ready — drop it in `_private/` for mining.
+- [ ] Confirm the two `.mp4` files you shared are relevant (I can't parse video
+      automatically — tell me what they show and I'll work them in).
+- [ ] (Optional) Publish sanitized case-study artifacts as GitHub repos and set
+      each `repoUrl` to make the work inspectable.
 - [ ] Spot-check any source you intend to quote publicly against its live page.

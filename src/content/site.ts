@@ -12,11 +12,15 @@
  */
 
 export const site = {
-  // ---- IDENTITY (replace the TODO placeholders) --------------------------
-  /** TODO: your full name, e.g. "Jordan Rivera". Used in the hero, footer, metadata. */
-  name: "Your Name",
-  /** TODO: shorter form used in casual copy. */
-  firstName: "Your",
+  // ---- IDENTITY ----------------------------------------------------------
+  /**
+   * You chose to stay anonymous for now, so this is a neutral working ALIAS,
+   * not your real name. It appears in the nav, footer, and metadata.
+   * Swap it for your real name or a handle you like whenever you're ready.
+   */
+  name: "Signal & Structure",
+  /** Casual short form (currently unused in the UI; kept for convenience). */
+  firstName: "the studio",
 
   /**
    * Positioning role line. This is deliberately specific — it is NOT
@@ -36,11 +40,13 @@ export const site = {
    */
   email: "you@example.com",
 
+  // Any link left as "" is automatically hidden from the UI.
+  // They start empty to keep the site anonymous — add them when you're ready.
   links: {
-    /** Known from this repository. Update if you use a different account. */
-    github: "https://github.com/dballage777",
-    /** TODO: your LinkedIn profile URL. */
-    linkedin: "https://www.linkedin.com/in/your-handle",
+    /** Your GitHub profile. Left empty for anonymity (your repo is under a real handle). */
+    github: "",
+    /** Your LinkedIn profile URL. Left empty for anonymity. */
+    linkedin: "",
     /** OPTIONAL: freelance profile (Contra, Upwork, etc.). Leave "" to hide. */
     contra: "",
     /** OPTIONAL: X/Twitter. Leave "" to hide. */
@@ -81,7 +87,7 @@ export const site = {
    * transparency is a credibility signal, per the research.
    */
   demoDisclaimer:
-    "The projects below are independent demonstrations built to show method and thinking. Evaluation scores shown are illustrative of the review process, not benchmarks from paid client work.",
+    "Projects are a mix of real, anonymized work and independent demonstrations — each is labeled. Any numeric scores shown are illustrative of the review process, not benchmarks from paid client work.",
 } as const;
 
 export type Site = typeof site;
