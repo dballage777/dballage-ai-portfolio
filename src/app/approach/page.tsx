@@ -51,6 +51,49 @@ export default function ApproachPage() {
         </Container>
       </Section>
 
+      <Section className="border-b border-line">
+        <Container>
+          <SectionHeading
+            eyebrow="Practice, measured"
+            title="Iterated and reused — not one-off"
+            intro="These are real counts from my own prompt history. They're not vanity metrics; they're evidence that the work is developed deliberately and reused, rather than typed once and hoped over."
+          />
+          <div className="mt-12 grid gap-5 sm:grid-cols-3">
+            {[
+              {
+                n: "36",
+                label: "tasks one research template was reused across",
+                note: "A single, recognizable research prompt — applied again and again, not rewritten from scratch.",
+              },
+              {
+                n: "42",
+                label: "refinements of one prompt, across 12 sessions",
+                note: "The same ranking prompt, tightened toward objectivity over roughly two months.",
+              },
+              {
+                n: "3",
+                label: "tightening passes to make a formatting prompt content-safe",
+                note: "From the document-guardrail case study — broad → forbid-destructive → preservation-first.",
+              },
+            ].map((s) => (
+              <div key={s.label} className="rounded-[var(--radius-card)] border border-line bg-surface p-6">
+                <div className="font-mono text-4xl font-semibold tracking-tight text-accent">
+                  {s.n}
+                </div>
+                <p className="mt-2 text-sm font-medium text-ink">{s.label}</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{s.note}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 max-w-2xl text-xs leading-relaxed text-muted">
+            Method: counted from my own AI-chat history by identifying reuse of a
+            recognizable prompt template and distinct, dated iterations of the same
+            prompt. Reproducible from an export; figures describe prompt practice, not
+            client outcomes.
+          </p>
+        </Container>
+      </Section>
+
       <Section>
         <Container>
           <div className="max-w-3xl">
