@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
@@ -48,6 +48,13 @@ export const metadata: Metadata = {
     description: site.positioning.short,
   },
   robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fbfbf8" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0d11" },
+  ],
 };
 
 // Set theme before paint to avoid a flash. Respects a saved choice, else OS.
