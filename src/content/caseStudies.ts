@@ -81,6 +81,117 @@ export type CaseStudy = {
 export const caseStudies: CaseStudy[] = [
   // ==========================================================================
   {
+    slug: "research-prompt-behind-this-portfolio",
+    title: "The research prompt that built this portfolio's evidence base",
+    kind: "Real project · Research prompt system",
+    types: ["Research workflows", "Prompt systems"],
+    real: true,
+    featured: true,
+    order: 0,
+    oneLiner:
+      "A multi-role research prompt that refuses to take search results at face value — it opens, inspects, and credibility-checks every source. It's what produced the 30 sources behind this very site.",
+    tags: ["Source credibility", "Prompt system", "Research workflow", "Bias auditing"],
+    models: ["ChatGPT (deep research)", "reused on Gemini & Claude"],
+    problem:
+      "Ask an AI to 'research X and give me the best sources' and it hands back the first page of search results dressed up as analysis — popular, unvetted, and occasionally fabricated. For anything that has to be trustworthy, that's worthless.",
+    context:
+      "Real, anonymized work. This is the prompt (lightly trimmed) I actually used to gather and vet the source base for this portfolio — the 30 resources on the Research page came out of it. It casts the model as a team of roles (research director, source-credibility analyst, bias auditor…) running a defined workflow, not just answering a query.",
+    objective:
+      "Return a fixed set of individually-validated sources — each actually opened, inspected, and judged for authority, originality, and commercial bias — with weak, duplicate, and SEO results explicitly disqualified.",
+    constraints: [
+      "Every final source must be individually opened and evaluated — never included for ranking, backlinks, or popularity",
+      "Flag commercial incentives and conflicts of interest",
+      "De-duplicate, and keep a balance of authoritative / academic / community / independent sources",
+      "Do not pad to hit the target number if genuine sources run out",
+    ],
+    initialApproach:
+      "The obvious ask — 'find me the 30 best sources on this' — returns a popularity list: the top blogs, a couple of vendor pages, whatever ranks. No validation, no credibility signal, and a real risk of invented links.",
+    promptVersions: [
+      {
+        label: "v1 — Naive ask",
+        prompt: `Research [topic] and give me the 30 best sources.`,
+        problems: [
+          "Returns first-page, popularity-ranked results, not vetted ones.",
+          "No per-source validation — includes things it never actually opened.",
+          "Risk of fabricated or SEO-spam links, with no credibility signal.",
+        ],
+      },
+      {
+        label: "vFinal — Multi-role team + per-source validation checklist (real prompt, trimmed)",
+        prompt: `You are a coordinated research team: Research Director, Investigative
+Researcher, Source-Credibility Analyst, Evidence Analyst, Community
+Intelligence Analyst, Bias Auditor, and Research Quality Auditor.
+
+Mission: a deep, systematic, deliberately unbiased investigation of resources
+on [TOPIC]. Do NOT give a superficial list from the first page of results.
+
+You MUST actually search for, open, inspect, evaluate, and validate EACH final
+source. Do not count a source merely because it appeared in results, was
+recommended, ranks highly, or has many backlinks.
+
+For each candidate that enters the final set:
+1. Locate and open the actual resource.
+2. Inspect its real contents; determine what it provides.
+3. Evaluate its authority and credibility.
+4. Judge original vs. derivative information.
+5. Check for commercial incentives or conflicts of interest.
+6. Check for duplication against others already chosen.
+
+Balance authoritative, academic, technical, practical, community-driven,
+independent, and specialized sources. Do not pad the list — if fewer genuine
+sources exist, return fewer.
+
+Workflow: DEFINE (what [TOPIC] means) -> DISCOVER (candidates) -> VALIDATE
+(the checklist above) -> SYNTHESIZE (what each contributes, and conflicts).`,
+      },
+    ],
+    whyItWorks: [
+      "It casts the model as several adversarial roles — a Bias Auditor and Source-Credibility Analyst argue with the Researcher — instead of a single eager assistant.",
+      "It replaces 'find sources' with an explicit per-source validation checklist: open it, inspect it, judge authority, originality, and commercial bias.",
+      "It names the shortcuts models default to — popularity, backlinks, 'it appeared in results' — and forbids each one.",
+      "A DEFINE → DISCOVER → VALIDATE → SYNTHESIZE workflow turns a lookup into a repeatable process, and 'don't pad the list' stops it inventing sources to hit a number.",
+    ],
+    evaluation: {
+      kind: "Qualitative evaluation",
+      criteria:
+        "Judged by whether the sources it returned actually survived independent re-checking while this site was built. Verdicts compare the naive ask to the final prompt.",
+      qualRows: [
+        { criterion: "Sources individually verifiable", before: "Fail", after: "Pass", note: "Each of the 30 was opened and summarized during the build." },
+        { criterion: "Weak / SEO / AI-slop excluded", before: "Fail", after: "Pass", note: "Disqualification rules kept filler out of the final set." },
+        { criterion: "Credibility & commercial bias assessed", before: "Fail", after: "Pass", note: "Marketplace pages were flagged as commercially motivated, not neutral." },
+        { criterion: "No fabricated links padding the count", before: "Partial", after: "Pass", note: "'Don't pad' helped; a human open-check was still needed for a few." },
+      ],
+    },
+    testCases: [
+      "The portfolio research itself — 30 sources across vendor, academic, community, and marketplace types",
+      "Reused on unrelated topics with the same structure (a genuinely reusable system)",
+      "A thin-evidence topic (must return fewer, not invent sources)",
+    ],
+    beforeAfter: [
+      {
+        input: "'Gather the strongest sources for building an AI portfolio.'",
+        before:
+          "A flat popularity list — a few top blogs and vendor pages — with no indication any of it had been opened or vetted.",
+        after:
+          "Thirty individually-evaluated sources spanning vendor docs, academic/community guides, evaluation tooling, marketplaces (flagged as commercial), and a peer example — the exact set powering this site's Research page.",
+      },
+    ],
+    failureCases: [
+      "It's slow and needs a research-capable mode; it's overkill for a casual lookup.",
+      "It can still surface a paywalled or moved link — the 'open it yourself' step doesn't disappear.",
+      "When genuine sources are scarce it must be explicitly told not to pad — and watched to confirm it didn't.",
+    ],
+    lessons: [
+      "Turn 'find' into 'validate': enumerate the checks a source must pass to make the cut.",
+      "Assign adversarial roles — a Bias Auditor makes the model critique its own picks.",
+      "Name the shortcuts to forbid (popularity, backlinks, 'it appeared in results'), or the model will take them.",
+    ],
+    businessApplication:
+      "Due diligence, literature reviews, vendor and competitive research, policy research — anywhere a decision rests on sources that must actually be trustworthy, not merely top-ranked.",
+  },
+
+  // ==========================================================================
+  {
     slug: "content-preserving-formatting-guardrails",
     title: "Making an AI reformat a document without destroying it",
     kind: "Real project · Prompt guardrails",
@@ -308,6 +419,100 @@ Topic: [TOPIC]`,
     ],
     businessApplication:
       "The same pattern powers any credibility-first research assistant — literature reviews, market/competitive research, or due diligence — where 'which sources can I trust, and why' matters more than sheer volume.",
+  },
+
+  // ==========================================================================
+  {
+    slug: "one-task-four-models",
+    title: "One research task, four models — tuned to each",
+    kind: "Real project · Model-aware prompting",
+    types: ["Prompt systems", "Research workflows"],
+    real: true,
+    featured: false,
+    order: 3.5,
+    oneLiner:
+      "The same 'find authentic community discussion, not SEO slop' task, rewritten for ChatGPT, Perplexity, Gemini, and HuggingChat — because one prompt does not behave the same on each.",
+    tags: ["Model-aware prompting", "Research workflow", "Prompt portability"],
+    models: ["ChatGPT", "Perplexity", "Gemini", "HuggingChat"],
+    problem:
+      "A prompt that works beautifully on one model returns bloated prose, ignores the format, or under-searches on another. Treating models as interchangeable wastes what each is actually best at.",
+    context:
+      "Real, anonymized work. I keep a base research task — find real user discussion on Reddit/forums/Discord, avoid SEO filler and AI summaries — and maintain a tailored variant per model, plus a note on when to reach for each.",
+    objective:
+      "Get the same high-signal, community-sourced research out of every model, adapting phrasing, format, and verbosity to how that model actually behaves.",
+    constraints: [
+      "Identical intent across all four models",
+      "Adapt only the framing and output format, not the goal",
+      "Pick the model (and mode) that fits the job",
+    ],
+    initialApproach:
+      "Paste one identical prompt into all four. It exposed each model's defaults rather than controlling them — one over-explained, one wrapped everything in prose, one ignored the requested format.",
+    promptVersions: [
+      {
+        label: "Per-model variants (same intent, tuned framing)",
+        language: "text",
+        prompt: `BASE INTENT (all models): find authentic user discussion about [TOPIC]
+across Reddit, niche forums, and public Discord/Telegram archives. Prioritize
+real experiences and disagreement; avoid SEO filler and AI-generated summaries.
+
+CHATGPT — enforce a tight format; it tends to add helper prose:
+  "...Return a numbered or bullet list only. No metadata, no headers, no
+   citations unless asked."
+
+PERPLEXITY — lean into its sourcing; make it cite:
+  "...Analyze at least 100 sources. Provide a direct link for each insight.
+   Group findings by platform (Reddit / GitHub / Discord / forums)."
+
+GEMINI — frame around indexes + community platforms:
+  "...Using public web indexes and community platforms, gather user-generated
+   conversations; report source, key opinions, recurring themes, disagreements."
+
+HUGGINGCHAT — keep it lean:
+  "...Search public conversations; return a simple, user-centric bullet list of
+   source, main opinions, recurring trends, and notable disagreements."`,
+      },
+    ],
+    whyItWorks: [
+      "The intent is identical; only the framing changes — so results stay comparable across models.",
+      "Each variant targets that model's strength: Perplexity's citations, ChatGPT's format-following, Gemini's index framing, HuggingChat's brevity.",
+      "A 'when to use each' note turns model choice into a deliberate design decision instead of a habit.",
+    ],
+    evaluation: {
+      kind: "Qualitative evaluation",
+      criteria:
+        "Compared the four tailored runs against pasting one identical prompt into all four, on the same topic, for signal vs. filler and format usability.",
+      qualRows: [
+        { criterion: "Returns real user discussion (not SEO/AI slop)", before: "Partial", after: "Pass", note: "Anti-filler framing tuned per model." },
+        { criterion: "Output usable without cleanup", before: "Fail", after: "Pass", note: "Format enforced where the model tends to ramble." },
+        { criterion: "Plays to each model's strength", before: "Fail", after: "Pass", note: "Perplexity cites sources; ChatGPT holds a tight list." },
+      ],
+    },
+    testCases: [
+      "A consumer-product question with lots of forum chatter",
+      "A niche how-to with thin, scattered discussion",
+      "A debate-heavy topic where disagreement is the point",
+    ],
+    beforeAfter: [
+      {
+        input: "The same research prompt pasted, unchanged, into all four models.",
+        before:
+          "One over-explained, one wrapped the list in paragraphs, one dropped the requested structure — three different cleanup jobs.",
+        after:
+          "Each model returned clean, comparable, high-signal results in the format asked for, using what it's individually good at.",
+      },
+    ],
+    failureCases: [
+      "Maintaining four variants is ongoing upkeep.",
+      "Model behavior drifts across updates, so the variants need occasional re-tuning.",
+      "Some models' search is simply weaker on a given topic, no matter the prompt.",
+    ],
+    lessons: [
+      "Portability is a myth to test for, not assume.",
+      "Adapt the framing, keep the intent — that's what keeps outputs comparable.",
+      "Model choice is a design decision with real trade-offs in cost, format, and search quality.",
+    ],
+    businessApplication:
+      "Any team using more than one AI tool benefits from a small library of per-model prompts instead of one prompt that's mediocre everywhere.",
   },
 
   // ==========================================================================
@@ -599,7 +804,7 @@ GEMINI-class — benefits from an explicit 'do not infer' guardrail and an
     title: "A rubric-based evaluation harness for AI summaries",
     kind: "Evaluation",
     types: ["Evaluation"],
-    featured: true,
+    featured: false,
     order: 5,
     oneLiner:
       "Deciding what 'a good summary' means before generating one — a reusable rubric, test set, and LLM-judge sanity check.",

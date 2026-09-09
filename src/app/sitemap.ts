@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/work",
     "/prompt-lab",
+    "/prompt-pack",
     "/approach",
     "/services",
     "/capabilities",

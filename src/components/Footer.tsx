@@ -7,6 +7,7 @@ const cols = [
     links: [
       { href: "/work", label: "Case studies" },
       { href: "/prompt-lab", label: "Prompt Lab" },
+      { href: "/prompt-pack", label: "Prompt Pack" },
       { href: "/approach", label: "Approach" },
     ],
   },
