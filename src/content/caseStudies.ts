@@ -695,111 +695,6 @@ JSON only: { "category", "action", "needs_info", "draft_reply", "confidence" }
 
   // ==========================================================================
   {
-    slug: "multi-model-extraction",
-    title: "Same task, three models: structured extraction",
-    kind: "Multi-model comparison",
-    types: ["Prompt systems"],
-    featured: false,
-    order: 4,
-    oneLiner:
-      "Extracting clean structured data from messy meeting notes — and adapting the prompt to how each model actually behaves.",
-    tags: ["Model-aware prompting", "Structured output", "Few-shot", "Evaluation"],
-    models: ["Claude", "GPT-class", "Gemini-class"],
-    problem:
-      "The same extraction prompt gave different failure modes on different models: one over-explained, one dropped fields, one wrapped JSON in prose. 'It works on my model' isn't a strategy.",
-    context:
-      "Teams frequently standardize on one prompt and assume it ports across models. Models differ in defaults — verbosity, how strictly they honour schemas, how they handle 'unknown'. Effective work means adapting the prompt, not blaming the model.",
-    objective:
-      "Extract {action_items, owners, due_dates, decisions} from free-form notes as valid JSON, with 'unknown' where a field isn't stated — reliably, on each model.",
-    constraints: [
-      "Never infer an owner or date that isn't in the text",
-      "Always valid, parseable JSON — no prose wrapper",
-      "Same target schema across all models",
-    ],
-    initialApproach:
-      "One shared prompt asking for the four fields as JSON. It exposed each model's default behaviour rather than controlling it.",
-    promptVersions: [
-      {
-        label: "Shared baseline (revealed per-model quirks)",
-        prompt: `Extract action items, owners, due dates, and decisions from these notes
-as JSON.
-
-Notes:
-{{notes}}`,
-        problems: [
-          "One model returned Markdown-fenced JSON with commentary.",
-          "One inferred owners not present in the text.",
-          "One omitted the decisions array when there were none instead of returning [].",
-        ],
-      },
-      {
-        label: "Model-aware adjustments (same schema, tuned instructions)",
-        language: "text",
-        prompt: `SHARED SCHEMA (all models):
-{
-  "action_items": [{"task": string, "owner": string|"unknown", "due": string|"unknown"}],
-  "decisions": string[]
-}
-
-CLAUDE  — responds well to XML structure + explicit "unknown" rule:
-  Wrap notes in <notes>...</notes>. Add:
-  "If owner or due date is not explicitly stated, use \\"unknown\\". Return
-   [] for empty arrays. Output JSON only, no preamble."
-
-GPT-class — enforce format hard; it tends to add helper prose:
-  Use a system message: "You are a JSON API. Output ONLY valid JSON matching
-  the schema. No markdown, no explanation." Provide one few-shot pair.
-
-GEMINI-class — benefits from an explicit 'do not infer' guardrail and an
-  example showing the "unknown" case, or it will guess owners.`,
-      },
-    ],
-    whyItWorks: [
-      "The schema is the contract and stays identical — only the *instructions around it* adapt to each model's defaults.",
-      "Each adjustment targets that model's observed failure: prose-wrapping, inference, or empty-array handling.",
-      "A shared 'unknown' rule prevents the most damaging error — confidently inventing an owner or deadline.",
-    ],
-    evaluation: {
-      kind: "Illustrative demonstration",
-      criteria:
-        "Ten messy note samples were run through each model, before and after the model-aware tuning, and scored on the same rubric. Illustrative of the comparison.",
-      rows: [
-        { criterion: "Valid JSON on first parse", before: 6, after: 10, note: "Format enforcement removed prose wrappers." },
-        { criterion: "No invented owners/dates", before: 5, after: 9, note: "'Do not infer' + unknown rule." },
-        { criterion: "Schema completeness (arrays present)", before: 6, after: 10, note: "Explicit empty-array rule." },
-        { criterion: "Cross-model consistency", before: 4, after: 9, note: "Outputs now interchangeable downstream." },
-      ],
-    },
-    testCases: [
-      "Notes with clear owners and dates",
-      "Notes where owners are implied but not stated (must be 'unknown')",
-      "Notes with no decisions at all (must return [])",
-      "Notes containing a date range or relative date ('next Friday')",
-    ],
-    beforeAfter: [
-      {
-        input: "\"...Sam will look into the vendor thing. We agreed to postpone the launch. Follow up soon.\"",
-        before:
-          "Illustrative baseline (one model): ```json { \"action_items\": [{\"task\":\"vendor research\",\"owner\":\"Sam\",\"due\":\"this week\"}] }``` — invents a due date and drops the decision.",
-        after:
-          "Illustrative tuned output: {\"action_items\":[{\"task\":\"Look into the vendor issue\",\"owner\":\"Sam\",\"due\":\"unknown\"}],\"decisions\":[\"Postpone the launch\"]}",
-      },
-    ],
-    failureCases: [
-      "Relative dates ('next Friday') are left 'unknown' unless a reference date is supplied — arguably safer, but a resolver step would improve it.",
-      "Nicknames vs. full names aren't reconciled without a roster.",
-    ],
-    lessons: [
-      "Portability is a myth you should test for, not assume. Same schema, adapted instructions.",
-      "The highest-value guardrail across all models was the same: 'do not infer — use unknown'.",
-      "Model choice is a design decision with cost/latency/verbosity trade-offs, not a loyalty.",
-    ],
-    businessApplication:
-      "Any pipeline that ingests unstructured notes (CRM updates, meeting minutes, tickets) can standardize on one schema while staying free to switch models for cost or availability.",
-  },
-
-  // ==========================================================================
-  {
     slug: "evaluation-framework",
     title: "A rubric-based evaluation harness for AI summaries",
     kind: "Evaluation",
@@ -872,7 +767,7 @@ This mirrors the "evaluation flywheel" idea: measure the measurer.`,
     evaluation: {
       kind: "Illustrative demonstration",
       criteria:
-        "Illustrative comparison of two summary prompts (a naive one vs. a structured one) scored by the harness across a small fixed test set.",
+        "Illustrative comparison of two summary prompts (a naive one vs. a structured one) scored by the harness across a small fixed test set. Reproducible: run the evaluator prompt above on your own before/after outputs against a fixed set and compare — the scores below show the shape of that review, not a fixed benchmark.",
       rows: [
         { criterion: "Faithfulness", before: 3, after: 5, note: "Structured prompt banned claims not in source." },
         { criterion: "Coverage", before: 3, after: 4, note: "Bullet structure surfaced more key points." },

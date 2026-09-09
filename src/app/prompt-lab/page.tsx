@@ -3,11 +3,12 @@ import Link from "next/link";
 import { promptLab } from "@/content/promptLab";
 import { Container, Section, SectionHeading, Pill } from "@/components/ui";
 import { PromptBlock } from "@/components/PromptBlock";
+import { PromptBuilder } from "@/components/PromptBuilder";
 
 export const metadata: Metadata = {
   title: "Prompt Lab",
   description:
-    "Side-by-side prompt engineering demonstrations: a weak prompt, an improved one, and the reasoning behind each technique.",
+    "An interactive prompt builder plus side-by-side prompt engineering demonstrations: a weak prompt, an improved one, and the reasoning behind each technique.",
 };
 
 export default function PromptLabPage() {
@@ -28,7 +29,18 @@ export default function PromptLabPage() {
           .
         </p>
 
-        <div className="mt-12 space-y-6">
+        <div className="mt-10">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
+              Interactive
+            </span>
+            <h3 className="text-lg font-semibold tracking-tight">Try it: build a structured prompt</h3>
+          </div>
+          <PromptBuilder />
+        </div>
+
+        <div className="mt-16 space-y-6">
           {promptLab.map((e) => (
             <div
               key={e.slug}
