@@ -64,6 +64,11 @@ export const site = {
     short:
       "I design AI workflows and prompt systems that turn complex tasks into repeatable, reliable, and evaluable processes.",
 
+    // The hero sub-headline. Kept as its own line so editing other copy can't
+    // accidentally change it.
+    heroSub:
+      "Most people can get an answer out of an AI model. Fewer can turn a fuzzy problem into a structured workflow, engineer prompts that behave consistently on real inputs, and prove the result actually works. That gap is where I work.",
+
     long:
       "Most people can get an answer out of an AI model. Fewer can turn a fuzzy business problem into a structured AI workflow, engineer prompts that behave consistently across real-world inputs, and prove the result actually works. That gap — between a clever one-off prompt and a dependable system — is where I work. I analyze the problem, design the workflow, engineer and iterate the prompts against test cases, evaluate outputs against explicit criteria, and document the whole method so it can be trusted, handed off, and improved.",
 
@@ -87,7 +92,7 @@ export const site = {
    * transparency is a credibility signal, per the research.
    */
   demoDisclaimer:
-    "Projects are a mix of real, anonymized work and independent demonstrations — each is labeled. Any numeric scores shown are illustrative of the review process, not benchmarks from paid client work.",
+    "Projects are a mix of real, anonymized work and independent demonstrations — each is labeled. Evaluations are my own structured review (reproducible with the prompts shown), and any numeric scores are illustrative of that process — not third-party benchmarks or results from paid client work.",
 } as const;
 
 export type Site = typeof site;

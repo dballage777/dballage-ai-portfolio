@@ -20,7 +20,7 @@ export default function Home() {
               <span className="text-accent">tested, repeatable</span> AI workflows.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft sm:text-xl">
-              {site.positioning.long.split(". ").slice(0, 2).join(". ")}.
+              {site.positioning.heroSub}
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">

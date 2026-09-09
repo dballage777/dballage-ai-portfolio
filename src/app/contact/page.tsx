@@ -26,13 +26,15 @@ export default function ContactPage() {
             </p>
 
             <div className="mt-8 space-y-3 text-sm">
-              <a
-                href={`mailto:${site.email}`}
-                className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 hover:border-line-strong"
-              >
-                <span aria-hidden className="text-accent">✉</span>
-                <span className="text-ink-soft">{site.email}</span>
-              </a>
+              {site.email !== "you@example.com" && (
+                <a
+                  href={`mailto:${site.email}`}
+                  className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 hover:border-line-strong"
+                >
+                  <span aria-hidden className="text-accent">✉</span>
+                  <span className="text-ink-soft">{site.email}</span>
+                </a>
+              )}
               {site.links.linkedin && (
                 <a
                   href={site.links.linkedin}

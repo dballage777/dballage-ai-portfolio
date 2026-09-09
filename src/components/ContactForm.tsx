@@ -26,10 +26,8 @@ export function ContactForm() {
     >
       {isPlaceholderEmail && (
         <p className="rounded-lg border border-dashed border-line-strong bg-surface-2 p-3 text-xs text-muted">
-          Heads up: the contact email is still the placeholder in{" "}
-          <code className="rounded bg-surface px-1 py-0.5">src/content/site.ts</code>. Set{" "}
-          <code className="rounded bg-surface px-1 py-0.5">email</code> to route this form
-          to your inbox.
+          Setup reminder (only you see this): a public contact address hasn&apos;t been
+          set yet, so this form points to a placeholder. Add one before launch.
         </p>
       )}
       <div className="grid gap-4 sm:grid-cols-2">

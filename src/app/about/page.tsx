@@ -37,23 +37,6 @@ export default function AboutPage() {
               </p>
             </div>
 
-            {/* Editable personal note */}
-            <div className="mt-8 rounded-[var(--radius-card)] border border-dashed border-line-strong bg-surface-2 p-5">
-              <p className="eyebrow mb-2">Personalize this</p>
-              <p className="text-sm leading-relaxed text-muted">
-                This About section is written to be honest and non-fabricated. Add your
-                own real background — where you come from, what drew you to AI, any
-                relevant study or work — by editing{" "}
-                <code className="rounded bg-surface px-1.5 py-0.5 text-xs">
-                  src/app/about/page.tsx
-                </code>{" "}
-                and{" "}
-                <code className="rounded bg-surface px-1.5 py-0.5 text-xs">
-                  src/content/site.ts
-                </code>
-                . Nothing here claims experience you haven&apos;t provided.
-              </p>
-            </div>
           </div>
 
           <aside className="space-y-6">
@@ -101,7 +84,7 @@ export default function AboutPage() {
                   </li>
                 )}
                 {!site.links.github && !site.links.linkedin && (
-                  <li className="text-muted">Links hidden while anonymous — add them in site.ts.</li>
+                  <li className="text-muted">Reach out through the contact page.</li>
                 )}
               </ul>
               <div className="mt-4">

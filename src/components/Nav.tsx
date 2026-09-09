@@ -35,12 +35,12 @@ export function Nav() {
           <span className="text-sm font-semibold tracking-tight">{site.name}</span>
         </Link>
 
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+              className={`whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 isActive(l.href)
                   ? "text-accent"
                   : "text-ink-soft hover:text-ink hover:bg-surface-2"
@@ -59,7 +59,7 @@ export function Nav() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <ThemeToggle />
           <button
             type="button"
@@ -77,7 +77,7 @@ export function Nav() {
       </nav>
 
       {open && (
-        <div id="mobile-menu" className="border-t border-line bg-canvas md:hidden">
+        <div id="mobile-menu" className="border-t border-line bg-canvas lg:hidden">
           <div className="mx-auto flex max-w-6xl flex-col px-5 py-3 sm:px-8">
             {links.map((l) => (
               <Link

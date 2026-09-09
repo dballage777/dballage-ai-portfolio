@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { promptLab } from "@/content/promptLab";
 import { Container, Section, SectionHeading, Pill } from "@/components/ui";
 import { PromptBlock } from "@/components/PromptBlock";
@@ -18,6 +19,14 @@ export default function PromptLabPage() {
           title="Techniques, shown — not just named"
           intro="Each card pairs a weak prompt with a stronger one and explains the technique. Copy any prompt and adapt it. The point isn't the wording; it's why the change works."
         />
+
+        <p className="mt-5 max-w-2xl text-sm text-muted">
+          Want ready-to-use prompts instead of technique breakdowns? Grab the{" "}
+          <Link href="/prompt-pack" className="link-underline text-accent">
+            Prompt Pack
+          </Link>
+          .
+        </p>
 
         <div className="mt-12 space-y-6">
           {promptLab.map((e) => (
