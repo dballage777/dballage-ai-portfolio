@@ -103,9 +103,11 @@ RESEARCH.md            # internal research synthesis (the 30 sources)
 ```
 
 ### To add a case study
-Append an object to the `caseStudies` array in `src/content/caseStudies.ts`
-(the type guides every field). Routes, the index card, sitemap, and the featured
-grid update automatically.
+Easiest path: follow **`docs/CASE_STUDY_CHECKLIST.md`** while you do real AI work,
+fill in **`src/content/_case-study-template.ts`** (a non-imported scratch stub),
+and hand it to Claude Code to polish + paste into `caseStudies.ts`. Or append an
+object to the `caseStudies` array directly (the type guides every field). Routes,
+the gallery card + filters, sitemap, and the featured grid update automatically.
 
 ---
 
