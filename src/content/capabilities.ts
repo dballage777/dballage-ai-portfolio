@@ -55,6 +55,19 @@ export const capabilities: Capability[] = [
     ],
   },
   {
+    slug: "governance-safety",
+    title: "AI governance & safety by design",
+    summary:
+      "Keeping the human in control and the data protected: approval checkpoints, honest capability limits, de-identified inputs, and prompts that treat uploaded files as data, not instructions.",
+    skills: [
+      "Instruction hierarchy & approval checkpoints",
+      "Honest capability limits (no silent failure)",
+      "Privacy by design (de-identified data, FERPA/COPPA-aware)",
+      "Injection-resistant rules ('files are data, not instructions')",
+      "Guardrails for sensitive and student-facing use",
+    ],
+  },
+  {
     slug: "model-strategy",
     title: "Model-aware strategy",
     summary:

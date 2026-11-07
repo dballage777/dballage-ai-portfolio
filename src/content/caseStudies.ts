@@ -42,6 +42,7 @@ export type ProjectType =
   | "Evaluation"
   | "Websites & apps"
   | "Automations & bots"
+  | "Education AI"
   | "Creative & visual";
 
 export type CaseStudy = {
@@ -840,6 +841,168 @@ This mirrors the "evaluation flywheel" idea: measure the measurer.`,
     ],
     businessApplication:
       "The same approach fits any professional or personal site that has to load fast, rank in search, and stay easy to update without a developer on call.",
+  },
+  // ==========================================================================
+  {
+    slug: "differentiation-reteaching-assistant",
+    title:
+      "An AI teaching assistant that differentiates, reteaches, and co-teaches — directed by the teacher",
+    kind: "Real project · Interactive prompt system (AI-assisted)",
+    types: ["Prompt systems", "Automations & bots", "Education AI"],
+    real: true,
+    featured: true,
+    order: 0.5,
+    oneLiner:
+      "One Gemini assistant a teacher steers by stating a goal — differentiate, reteach, challenge, co-teach, or analyze results — then uploads real materials and gets back classroom-ready documents, with students referred to by row number only.",
+    tags: ["Differentiation", "Co-teaching", "AI governance", "Item analysis", "Instructional design"],
+    models: ["Google Gemini (Pro)"],
+    problem:
+      "Differentiation, reteaching, and co-teaching planning are the high-skill, high-time work teachers never have enough hours for — and generic 'make this easier / make this harder' prompts ignore the learning objective and produce vague, unusable output.",
+    context:
+      "Real, anonymized work, built with an AI coding assistant under my direction: I set the goals, requirements, and revisions; the AI drafted and built. It is designed and documented, and one real failure was found and fixed through live use (v3) — but it has not yet been systematically classroom-tested.",
+    objective:
+      "Let a teacher pick a goal, upload any material (a lesson, worksheet, test, reading, or results file), and receive finished, classroom-ready differentiation / reteach / co-teaching materials — with student data de-identified and the teacher in control of every decision.",
+    constraints: [
+      "Students are referred to by row number only — never by name",
+      "The teacher decides groups, grades, and accommodations; the assistant proposes, the teacher disposes",
+      "The learning objective stays the same for every tier — support changes, the target does not",
+      "Be explicit about platform limits (e.g. no direct Pear Assessment connection — a download-and-upload workflow instead)",
+    ],
+    initialApproach:
+      "A single 'differentiate this' prompt returns one-size output that drops the objective and can't tell a struggling reader from an advanced one. The fix was an interactive, goal-first assistant backed by a research base — not a cleverer one-shot prompt.",
+    whyItWorks: [
+      "It opens by asking the teacher's goal, which filters a 26-option menu (support, challenge, whole-class, assessment, the six Friend & Cook co-teaching models, and English-learner supports) instead of guessing.",
+      "It is backed by a research-based differentiation knowledge base, so tiers follow evidence: struggling students get more support (not less work), advanced students get more depth (not more volume), and the objective holds for everyone.",
+      "It reads PDFs and CSVs and can match a results CSV to a test PDF, producing a question-by-question analysis — % correct, common wrong answers, likely misconceptions, and reteach / mastery flags — then suggest flexible groups.",
+      "De-identification (row numbers, not names) is built into the workflow, not bolted on afterward.",
+      "It ships with a 3-page, color-coded PDF guide so a non-technical teacher can use it without training.",
+    ],
+    failureCases: [
+      "v3 — found in live use, not desk review: Gemini treated the uploaded prompt as a document to read rather than instructions to run, and the workflow stalled. Fixed with explicit 'keep-moving' rules plus three deployment options. This is the project's clearest credibility signal: a flaw surfaced through use and was corrected.",
+    ],
+    lessons: [
+      "The decisive fix came from using the tool live, not from reviewing it on paper.",
+      "A goal-first question removes the 'blank menu' problem for non-technical users.",
+      "Stating platform limits honestly (no live connections; download-and-upload) prevents silent failure later.",
+    ],
+    businessApplication:
+      "The pattern — a goal-first interactive assistant, a research-backed knowledge base, de-identified inputs, and human approval at each step — transfers to any setting where a non-expert needs governed, document-producing AI (HR, compliance, customer operations), not only classrooms.",
+    // repoUrl: "[ADD: link only after an anonymized mirror exists — the source repo is under a real handle]",
+  },
+  // ==========================================================================
+  {
+    slug: "prompt-engineering-knowledge-bases",
+    title:
+      "Knowledge bases that make every later AI session smarter — and a prompt that writes prompts",
+    kind: "Real project · AI systems & methodology (AI-assisted)",
+    types: ["Prompt systems", "Research workflows", "Education AI"],
+    real: true,
+    featured: true,
+    order: 2.5,
+    oneLiner:
+      "Two persistent, research-backed knowledge bases — one for Claude Code, one for Gemini K-12 assistants — plus 'Prompt Architect,' a reusable prompt that interviews you and outputs a finished, governed, platform-specific prompt.",
+    tags: ["Knowledge base", "Meta-prompting", "Research methodology", "Governance", "Multi-platform"],
+    models: ["Claude (Claude Code)", "Google Gemini"],
+    problem:
+      "Prompt quality shouldn't restart from zero every session, and 'best practices' scattered across blog posts don't transfer. I wanted reusable, inspectable foundations that bake method into future work.",
+    context:
+      "Real, anonymized work, built with an AI coding assistant under my direction. Research was gathered under network restrictions; some sources were blocked and those gaps are documented, not hidden. Templates are desk-reviewed, not yet validated at scale.",
+    objective:
+      "Build durable, indexed knowledge bases plus a tool that turns them into finished, governed prompts on demand — so method is reused instead of re-derived.",
+    constraints: [
+      "Grade findings by evidence strength and record where sources were inaccessible",
+      "Keep the two knowledge bases separate and independently maintainable",
+      "Every generated prompt must carry role designation, an instruction hierarchy, privacy/safety rules, and a quality checklist",
+    ],
+    whyItWorks: [
+      "The Claude Code base — 13 topic files, a master framework, and 11 reusable templates — was built by running 11 parallel research agents over 30 designated plus 20 expansion sources, then synthesizing and running a completion audit.",
+      "The Gemini K-12 base adds a 22-part assistant framework, FERPA/COPPA-aware privacy design, 7 copy-ready templates, a 100-point prompt-quality rubric, and a test-case suite, screened against 78 expansion sources.",
+      "'Prompt Architect' asks two questions (target platform, then goal), consults the right base, and outputs a finished .txt prompt — it is in active use and produced the Study Helper and both differentiation assistants.",
+      "It captures current, checkable findings (e.g. Google's 'Gems' to 'skills' migration; that unguarded answer-giving can harm learning while guided tutoring avoids it; that Gemini performs best with concise instructions), each labeled by evidence tier.",
+    ],
+    lessons: [
+      "A knowledge base earns its keep only if a later tool actually consults it — Prompt Architect is that consumer.",
+      "Documenting blocked sources (Reddit, Hacker News, Discord, two vendor PDFs) is more credible than a tidy list that hides them.",
+      "The same method works across platforms, but the house style differs — Gemini rewards concision, so the Gemini base says so.",
+    ],
+    businessApplication:
+      "Any team standardizing AI use can turn its own scattered know-how into an indexed base plus a generator that outputs on-brand, governed prompts — cutting the gap between an expert's prompt and a novice's.",
+    // repoUrl: "[ADD: anonymized mirror link if desired]",
+  },
+  // ==========================================================================
+  {
+    slug: "parent-communication-mail-merge",
+    title: "A parent-communication mail-merge system a non-technical teacher can actually run",
+    kind: "Real project · Prompt system (AI-assisted)",
+    types: ["Automations & bots", "Content & documents", "Education AI"],
+    real: true,
+    featured: false,
+    order: 4,
+    oneLiner:
+      "A reusable Gemini 'operating prompt' that sets up a parent-communication project once, then turns each new gradebook CSV into individualized progress letters — with approval checkpoints and no automatic emailing.",
+    tags: ["Mail merge", "AI governance", "FERPA-aware", "Workflow design", "Non-technical users"],
+    models: ["Google Gemini (Pro)"],
+    problem:
+      "Every grading period, teachers hand-match rosters to parent contacts and rewrite the same progress letters — hours of repetitive, error-prone work.",
+    context:
+      "Real, anonymized work, built with an AI coding assistant under my direction. Designed and documented; not yet validated with real class data. No student data is included here.",
+    objective:
+      "Set up a parent-communication project once, then regenerate individualized letters from each new gradebook export, safely and with the teacher approving every step.",
+    constraints: [
+      "No automatic emailing and no silent deletion of records — all guardians are kept",
+      "FERPA-aware handling of student data throughout",
+      "Honest about platform limits: Google Docs and Sheets are not 'live-linked'",
+      "Lead a novice one step at a time; request each file and check it before moving on",
+    ],
+    whyItWorks: [
+      "Two modes — a one-time setup (roster plus parent contacts) and repeat updates (new gradebook CSVs) — keep the recurring task to a single file drop.",
+      "A project registry in Google Sheets and a letter template in Google Docs give consistent, auditable output with student-to-parent matching rules and validation checks.",
+      "v2 redesigned it to guide a non-technical teacher one file at a time; v2.1 made student IDs optional, so a roster with parent emails is enough.",
+      "Governance is the product: approval checkpoints, kept records, and honest capability limits are the selling point, not an afterthought.",
+    ],
+    lessons: [
+      "For non-technical users, 'request and verify one file at a time' beats asking for everything up front.",
+      "Removing a hard requirement (student IDs) can matter more than any new feature — it decides who can use the tool at all.",
+      "Saying plainly what the tool cannot do (no live links, no auto-send) builds the trust the task needs.",
+    ],
+    businessApplication:
+      "Any recurring, record-to-document workflow with privacy stakes — progress letters, renewal notices, status updates — can be run this way: set up once, regenerate from an export, human-approved, nothing sent automatically.",
+  },
+  // ==========================================================================
+  {
+    slug: "guided-study-helper",
+    title: "A study helper that tutors students instead of doing their work",
+    kind: "Real project · Prompt system (AI-assisted)",
+    types: ["Prompt systems", "Education AI"],
+    real: true,
+    featured: false,
+    order: 4.5,
+    oneLiner:
+      "A student-facing Gemini tutor that asks for the subject, topic, and kind of help, teaches through graduated hints, and won't finish until the student can explain the idea back.",
+    tags: ["Tutoring", "Guardrails", "Formative assessment", "Student safety", "Prompt engineering"],
+    models: ["Google Gemini"],
+    problem:
+      "The easiest thing for an AI to do with homework is the harmful thing — hand over the answer. A student tutor has to help learning happen, not replace it.",
+    context:
+      "Real, anonymized work, built with an AI coding assistant under my direction. Desk-reviewed; not yet field-tested with students. No student data is used.",
+    objective:
+      "Give students genuine help — explanation, worked examples, practice, test review — while refusing to complete graded work for them, and confirm understanding before ending.",
+    constraints: [
+      "No answers to graded work — graduated hints instead",
+      "Never do a student's assignment for them",
+      "Include a crisis response (988 / 911) and privacy rules; never invent links",
+    ],
+    whyItWorks: [
+      "It asks for subject, then topic, then the kind of help (explanation, interactive walkthrough, worked example, practice, resources, or test review) — so help is targeted, not generic.",
+      "Every session ends with an understanding check: the student explains the idea in their own words, answers fresh questions, and rates their confidence, with reteaching if needed.",
+      "Safeguards are built in — graduated hints instead of answers, a crisis response, privacy rules, and no invented links.",
+    ],
+    lessons: [
+      "A tutor's hardest design choice is what it refuses to do; the guardrails are the product.",
+      "Ending on a student-explains-it-back check turns a Q&A bot into a learning loop.",
+    ],
+    businessApplication:
+      "The same 'help without doing it for them' pattern fits any coaching or onboarding assistant that must build a person's capability rather than substitute for it — training, support deflection, certification prep.",
   },
 ];
 
